@@ -2,9 +2,33 @@ import { createHash } from "crypto";
 import type { Database } from "../../db/database.types";
 import type { CreateGenerationResponseDto, FlashcardProposalDto } from "../../types";
 import type { SupabaseClient as SupabaseClientType } from "@supabase/supabase-js";
+import { OpenRouterService } from "./openrouter.service";
+import { AIFlashcardsResponseSchema } from "../schemas/ai-response.schema";
+import {
+  OpenRouterError,
+  OpenRouterAuthError,
+  OpenRouterRateLimitError,
+} from "../errors/openrouter.errors";
 
 export class GenerationService {
-  private readonly model = "mock-ai-model"; // Mock model for testing
+  private readonly openRouterService: OpenRouterService;
+  private readonly model = "openai/gpt-4o-mini";
+  private readonly systemPrompt = `Jesteś ekspertem w tworzeniu fiszek edukacyjnych. 
+Twoim zadaniem jest przeanalizowanie dostarczonego tekstu źródłowego i wygenerowanie zestawu wysokiej jakości fiszek.
+
+Zasady tworzenia fiszek:
+- Każda fiszka powinna koncentrować się na jednym kluczowym pojęciu lub fakcie
+- Pytanie (front) powinno być jasne i konkretne
+- Odpowiedź (back) powinna być zwięzła, ale kompletna
+- Unikaj pytań typu "prawda/fałsz" - preferuj pytania wymagające zrozumienia
+- Używaj języka tekstu źródłowego (jeśli tekst jest po polsku, fiszki też powinny być po polsku)
+- Generuj między 5 a 15 fiszek, w zależności od treści i długości tekstu źródłowego
+
+Zwróć odpowiedź w formacie JSON zgodnym ze schematem.`;
+
+  constructor() {
+    this.openRouterService = new OpenRouterService();
+  }
 
   /**
    * Creates a new AI flashcard generation job.
@@ -68,40 +92,61 @@ export class GenerationService {
   }
 
   /**
-   * Mock implementation - returns sample flashcards instead of calling AI API.
+   * Generates flashcards using OpenRouter AI API.
+   * Uses structured completion to ensure consistent output format.
    */
   private async generateFlashcardsWithAI(sourceText: string): Promise<FlashcardProposalDto[]> {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Walidacja wejścia
+    if (!sourceText || sourceText.trim().length === 0) {
+      throw new Error("Source text cannot be empty");
+    }
 
-    // Return mock flashcards
-    return [
-      {
-        front: "What is the capital of Poland?",
-        back: "Warsaw",
+    try {
+      const userPrompt = `Przeanalizuj poniższy tekst i wygeneruj odpowiedni zestaw fiszek edukacyjnych:
+
+---
+${sourceText}
+---
+
+Wygeneruj fiszki w formacie JSON.`;
+
+      // Wywołanie OpenRouter API z ustrukturyzowaną odpowiedzią
+      const response = await this.openRouterService.generateStructuredCompletion({
+        systemPrompt: this.systemPrompt,
+        userPrompt,
+        responseSchema: AIFlashcardsResponseSchema,
+        model: this.model,
+        params: {
+          temperature: 0.7,
+          max_tokens: 4000,
+        },
+      });
+
+      // Konwersja odpowiedzi AI do formatu FlashcardProposalDto
+      return response.flashcards.map((flashcard) => ({
+        front: flashcard.front,
+        back: flashcard.back,
         source: "ai-full" as const,
-      },
-      {
-        front: "What is the largest planet in our solar system?",
-        back: "Jupiter",
-        source: "ai-full" as const,
-      },
-      {
-        front: "What is the chemical symbol for water?",
-        back: "H2O",
-        source: "ai-full" as const,
-      },
-      {
-        front: "What year did World War II end?",
-        back: "1945",
-        source: "ai-full" as const,
-      },
-      {
-        front: "What is the powerhouse of the cell?",
-        back: "Mitochondria",
-        source: "ai-full" as const,
-      },
-    ];
+      }));
+    } catch (error) {
+      // Obsługa specyficznych błędów OpenRouter
+      if (error instanceof OpenRouterAuthError) {
+        throw new Error(
+          "Błąd uwierzytelniania API OpenRouter. Sprawdź konfigurację klucza API."
+        );
+      }
+      if (error instanceof OpenRouterRateLimitError) {
+        throw new Error(
+          "Przekroczono limit zapytań do API OpenRouter. Spróbuj ponownie później."
+        );
+      }
+      if (error instanceof OpenRouterError) {
+        throw new Error(`Błąd API OpenRouter: ${error.message}`);
+      }
+
+      // Przepuszczanie innych błędów
+      throw error;
+    }
   }
 
   /**

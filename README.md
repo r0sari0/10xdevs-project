@@ -73,12 +73,45 @@ To run the project on your local machine, follow these steps.
     ```
 
     You will need to add your API keys and configuration details for Supabase and OpenRouter to this file.
+    
+    Required environment variables:
+    ```env
+    # Supabase Configuration
+    SUPABASE_URL=your_supabase_url
+    SUPABASE_KEY=your_supabase_anon_key
+    
+    # OpenRouter AI Configuration
+    OPENROUTER_API_KEY=sk-or-v1-your_api_key_here
+    
+    # Optional
+    ASTRO_SITE_URL=http://localhost:4321
+    ```
+    
+    **Getting API Keys:**
+    - **Supabase**: Sign up at [supabase.com](https://supabase.com) and create a new project
+    - **OpenRouter**: Sign up at [openrouter.ai](https://openrouter.ai) and generate an API key from your dashboard
 
 4.  **Run the development server:**
     ```sh
     npm run dev
     ```
     The application will be available at `http://localhost:4321`.
+
+## Architecture
+
+### AI Service Integration
+
+The application uses a layered architecture for AI-powered flashcard generation:
+
+```
+Client → API Endpoint → Generation Service → OpenRouter Service → OpenRouter API
+```
+
+- **OpenRouter Service** (`src/lib/services/openrouter.service.ts`): Low-level service for making structured API calls to OpenRouter with Zod schema validation
+- **Generation Service** (`src/lib/services/generation.service.ts`): High-level service that orchestrates flashcard generation, database operations, and error logging
+- **API Endpoints** (`src/pages/api/`): Astro API routes that handle HTTP requests and responses
+
+For detailed documentation about the AI services, see [`.ai/openrouter-service-documentation.md`](.ai/openrouter-service-documentation.md).
 
 ## Available Scripts
 
