@@ -1,0 +1,19 @@
+---
+const { searchParams } = Astro.url;
+const code = searchParams.get('code');
+const next = searchParams.get('next') ?? '/';
+
+if (code) {
+  const supabase = Astro.locals.supabase;
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  
+  if (!error) {
+    return Astro.redirect(next);
+  }
+}
+
+// If no code or error occurred, redirect to login
+return Astro.redirect('/login');
+---
+
+
