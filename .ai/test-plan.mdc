@@ -1,0 +1,156 @@
+# Plan Testów dla Aplikacji "AI Flashcard Generator"
+
+## 1. Wprowadzenie i Cele Testowania
+
+### 1.1. Wprowadzenie
+
+Niniejszy dokument określa strategię, zakres, podejście oraz zasoby przeznaczone na proces testowania aplikacji webowej **AI Flashcard Generator**. Aplikacja ta ma na celu automatyzację procesu tworzenia fiszek edukacyjnych z wykorzystaniem sztucznej inteligencji, co ma usprawnić i przyspieszyć naukę.
+
+### 1.2. Cele Testowania
+
+Głównym celem procesu testowego jest zapewnienie wysokiej jakości, stabilności, bezpieczeństwa i użyteczności aplikacji przed jej wdrożeniem produkcyjnym.
+
+Szczegółowe cele to:
+*   **Weryfikacja funkcjonalności:** Upewnienie się, że wszystkie kluczowe funkcje aplikacji, takie jak uwierzytelnianie użytkowników, generowanie fiszek przez AI oraz zarządzanie nimi, działają zgodnie z dokumentacją wymagań (`.ai/prd.md`).
+*   **Zapewnienie bezpieczeństwa:** Weryfikacja, że dane użytkowników są odpowiednio chronione, a dostęp do zasobów jest prawidłowo autoryzowany.
+*   **Ocena użyteczności (UX/UI):** Sprawdzenie, czy interfejs użytkownika jest intuicyjny, responsywny i zgodny z projektem.
+*   **Identyfikacja i raportowanie defektów:** Wykrycie, udokumentowanie i śledzenie błędów w celu ich naprawy przed wydaniem produktu.
+*   **Walidacja integracji:** Potwierdzenie poprawnej komunikacji pomiędzy frontendem (Astro/React), backendem (Astro API routes), bazą danych (Supabase) i zewnętrznymi usługami (OpenRouter.ai).
+
+## 2. Zakres Testów
+
+### 2.1. Funkcjonalności objęte testami
+
+*   **Moduł Uwierzytelniania:**
+    *   Rejestracja nowego użytkownika.
+    *   Logowanie i wylogowywanie.
+    *   Mechanizm resetowania hasła.
+    *   Ochrona tras wymagających zalogowania.
+    *   Zarządzanie sesją użytkownika.
+*   **Moduł Generowania Fiszek przez AI:**
+    *   Wprowadzanie tekstu źródłowego.
+    *   Walidacja długości tekstu po stronie klienta i serwera (1,000-10,000 znaków).
+    *   Proces generowania fiszek i obsługa stanu ładowania.
+    *   Wyświetlanie propozycji wygenerowanych fiszek.
+    *   Obsługa błędów API (zarówno wewnętrznych, jak i z OpenRouter).
+*   **Moduł Zarządzania Fiszkami (CRUD):**
+    *   Akceptacja, edycja i odrzucanie propozycji fiszek od AI.
+    *   Ręczne tworzenie nowej fiszki.
+    *   Przeglądanie listy własnych fiszek.
+    *   Edycja i usuwanie istniejących fiszek.
+*   **Interfejs Użytkownika:**
+    *   Responsywność na różnych urządzeniach (desktop, tablet, mobile).
+    *   Poprawność wyświetlania i działania wszystkich komponentów UI (przyciski, formularze, karty).
+    *   Dostępność (a11y) dla kluczowych elementów interaktywnych.
+
+### 2.2. Funkcjonalności wyłączone z testów (dla wersji MVP)
+
+*   Zaawansowane testy wydajnościowe pod dużym obciążeniem.
+*   Testy integracji z niestandardowymi bibliotekami do "spaced repetition" (weryfikacja ograniczy się do podstawowej integracji).
+*   Testy importu fiszek z plików zewnętrznych (PDF, DOCX).
+*   Testy funkcji społecznościowych (np. udostępnianie talii).
+
+## 3. Typy Testów do Przeprowadzenia
+
+| Typ Testu | Opis i Cel | Narzędzia/Podejście |
+| :--- | :--- | :--- |
+| **Testy Jednostkowe** | Weryfikacja pojedynczych funkcji i komponentów React w izolacji. Celem jest sprawdzenie logiki biznesowej, renderowania komponentów w różnych stanach (np. ładowanie, błąd) oraz działania hooków. | `Vitest`, `React Testing Library` |
+| **Testy Integracyjne** | Weryfikacja współpracy pomiędzy różnymi częściami systemu: Frontend ↔ API ↔ Baza Danych. Celem jest upewnienie się, że usługi (`generation.service`, `flashcard.service`) poprawnie komunikują się z Supabase. | `Vitest`, `Supertest` (dla API), `Mock Service Worker (MSW)` |
+| **Testy End-to-End (E2E)** | Symulacja rzeczywistych scenariuszy użytkownika w przeglądarce. Celem jest weryfikacja kompletnych przepływów, takich jak "rejestracja → logowanie → generowanie fiszek → zapisanie fiszki". | `Playwright` lub `Cypress` |
+| **Testy API** | Bezpośrednie testowanie endpointów API (`src/pages/api`) w celu weryfikacji logiki, autoryzacji, walidacji danych wejściowych i formatu odpowiedzi. | `Vitest` z `Supertest` lub `Postman` |
+| **Testy Wizualnej Regresji** | Porównywanie zrzutów ekranu interfejsu użytkownika z wcześniejszą, zatwierdzoną wersją. Celem jest wykrywanie niezamierzonych zmian w layoutcie i stylach. | `Playwright` (wbudowane funkcje) lub `Storybook` z dodatkami |
+| **Testy Dostępności (a11y)** | Automatyczne skanowanie interfejsu w poszukiwaniu naruszeń standardów WCAG. Celem jest zapewnienie, że aplikacja jest używalna dla osób z niepełnosprawnościami. | `axe-core` zintegrowane z `Playwright` lub `Storybook` |
+| **Testy Bezpieczeństwa** | Weryfikacja podstawowych aspektów bezpieczeństwa, głównie polityk RLS (Row Level Security) w Supabase, aby upewnić się, że użytkownicy mają dostęp tylko do swoich danych. | Dedykowane testy integracyjne symulujące nieautoryzowany dostęp. |
+
+## 4. Scenariusze Testowe dla Kluczowych Funkcjonalności
+
+### 4.1. Uwierzytelnianie
+
+*   **TC-AUTH-01:** Użytkownik może pomyślnie zarejestrować się przy użyciu prawidłowego e-maila i hasła.
+*   **TC-AUTH-02:** System uniemożliwia rejestrację z już istniejącym adresem e-mail.
+*   **TC-AUTH-03:** Użytkownik może pomyślnie zalogować się przy użyciu poprawnych danych.
+*   **TC-AUTH-04:** System wyświetla błąd logowania przy niepoprawnym haśle lub e-mailu.
+*   **TC-AUTH-05:** Zalogowany użytkownik może się pomyślnie wylogować.
+*   **TC-AUTH-06:** Niezalogowany użytkownik jest przekierowywany na stronę logowania przy próbie dostępu do chronionej strony (np. generatora fiszek).
+
+### 4.2. Generowanie Fiszek
+
+*   **TC-GEN-01:** Zalogowany użytkownik może wprowadzić tekst o prawidłowej długości (np. 1500 znaków) i pomyślnie zainicjować generowanie fiszek.
+*   **TC-GEN-02:** Interfejs użytkownika poprawnie wyświetla stan ładowania podczas generowania fiszek.
+*   **TC-GEN-03:** Po pomyślnym zakończeniu, na ekranie pojawiają się propozycje fiszek wygenerowane przez AI.
+*   **TC-GEN-04:** System blokuje możliwość generowania, gdy tekst jest za krótki (<1000 znaków) lub za długi (>10,000 znaków), i wyświetla odpowiedni komunikat.
+*   **TC-GEN-05:** Aplikacja poprawnie obsługuje błąd zwrócony przez API OpenRouter i wyświetla użytkownikowi stosowny komunikat.
+
+### 4.3. Zarządzanie Fiszkami
+
+*   **TC-MAN-01:** Użytkownik może zaakceptować pojedynczą propozycję fiszki, która zostaje dodana do jego zbioru.
+*   **TC-MAN-02:** Użytkownik może edytować treść propozycji fiszki przed jej zaakceptowaniem.
+*   **TC-MAN-03:** Użytkownik może odrzucić propozycję fiszki, która znika z widoku propozycji.
+*   **TC-MAN-04:** Użytkownik może zobaczyć listę wszystkich swoich zapisanych fiszek.
+*   **TC-MAN-05:** Użytkownik może usunąć fiszkę ze swojego zbioru, co jest potwierdzane w UI.
+
+## 5. Środowisko Testowe
+
+*   **Środowisko deweloperskie (lokalne):** Używane do uruchamiania testów jednostkowych i integracyjnych podczas developmentu. Baza danych Supabase uruchomiona lokalnie. Zewnętrzne API (OpenRouter) mockowane.
+*   **Środowisko Staging/Testowe:** Kopia środowiska produkcyjnego hostowana na DigitalOcean. Używa oddzielnej instancji bazy danych Supabase i dedykowanego klucza API do OpenRouter z niskim limitem. Na tym środowisku uruchamiane będą testy E2E oraz testy manualne.
+*   **Przeglądarki:** Testy E2E będą uruchamiane na najnowszych wersjach przeglądarek: Chrome, Firefox i Safari (emulacja WebKit w Playwright).
+
+## 6. Narzędzia do Testowania
+
+*   **Framework do testów jednostkowych i integracyjnych:** Vitest
+*   **Biblioteka do testowania komponentów React:** React Testing Library
+*   **Framework do testów E2E:** Playwright
+*   **Mockowanie API:** Mock Service Worker (MSW)
+*   **Zarządzanie projektem i raportowanie błędów:** GitHub Issues / Jira (lub inny dedykowany system)
+*   **CI/CD:** GitHub Actions (do automatycznego uruchamiania testów po każdym pushu do repozytorium)
+
+## 7. Harmonogram Testów
+
+Proces testowania będzie prowadzony równolegle z procesem deweloperskim zgodnie z poniższymi założeniami:
+*   **Testy jednostkowe i integracyjne:** Pisane przez deweloperów na bieżąco, wraz z nowymi funkcjonalnościami.
+*   **Testy E2E:** Tworzone po ustabilizowaniu się kluczowych przepływów użytkownika.
+*   **Faza testów regresji:** Przeprowadzana przed każdym planowanym wdrożeniem na produkcję.
+*   **Testy manualne (eksploracyjne):** Wykonywane na środowisku stagingowym przed wydaniem nowej wersji.
+
+## 8. Kryteria Akceptacji Testów
+
+### 8.1. Kryteria wejścia
+
+*   Kod źródłowy został pomyślnie zintegrowany i wdrożony na środowisku testowym.
+*   Wszystkie testy jednostkowe i integracyjne przechodzą pomyślnie.
+
+### 8.2. Kryteria wyjścia (Definition of Done)
+
+*   Pokrycie kodu testami jednostkowymi i integracyjnymi na poziomie co najmniej 80%.
+*   Wszystkie zdefiniowane scenariusze testowe E2E dla danej funkcjonalności przechodzą pomyślnie.
+*   Brak otwartych błędów krytycznych i blokujących.
+*   Wszystkie zgłoszone błędy o wysokim priorytecie zostały naprawione i zweryfikowane.
+*   Dokumentacja testowa została zaktualizowana.
+
+## 9. Role i Odpowiedzialności
+
+*   **Deweloperzy:**
+    *   Pisanie testów jednostkowych i integracyjnych dla tworzonego kodu.
+    *   Naprawa błędów zgłoszonych przez zespół QA.
+    *   Utrzymywanie środowiska CI/CD.
+*   **Inżynier QA:**
+    *   Projektowanie i implementacja testów E2E.
+    *   Wykonywanie testów manualnych i eksploracyjnych.
+    *   Zarządzanie procesem zgłaszania i śledzenia błędów.
+    *   Tworzenie i utrzymywanie planu testów oraz scenariuszy testowych.
+    *   Ostateczna akceptacja funkcjonalności przed wdrożeniem.
+*   **Product Owner / Manager:**
+    *   Definiowanie priorytetów dla testowanych funkcjonalności.
+    *   Uczestnictwo w testach akceptacyjnych (UAT).
+
+## 10. Procedury Raportowania Błędów
+
+Każdy znaleziony błąd musi zostać zgłoszony w systemie do śledzenia błędów (np. GitHub Issues) i powinien zawierać następujące informacje:
+
+*   **Tytuł:** Zwięzły i jednoznaczny opis problemu.
+*   **Środowisko:** Gdzie błąd wystąpił (np. Staging, przeglądarka Chrome v128).
+*   **Kroki do odtworzenia:** Szczegółowa, numerowana lista kroków potrzebnych do wywołania błędu.
+*   **Oczekiwany rezultat:** Co powinno się wydarzyć.
+*   **Aktualny rezultat:** Co się faktycznie wydarzyło.
+*   **Priorytet/Waga:** (np. Krytyczny, Wysoki, Średni, Niski).
+*   **Załączniki:** Zrzuty ekranu, nagrania wideo, logi z konsoli.

@@ -39,6 +39,10 @@ The project is built with a modern, scalable, and efficient technology stack:
 -   **DevOps**:
     -   **CI/CD**: [GitHub Actions](https://github.com/features/actions) for automated build and deployment pipelines.
     -   **Hosting**: [CloudFlare](https://www.cloudflare.com//) via Docker images.
+-   **Testing**:
+    -   **Unit & Integration Testing**: [Vitest](https://vitest.dev/) for running unit and integration tests.
+    -   **Component Testing**: [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) for testing React components.
+    -   **E2E Testing**: [Playwright](https://playwright.dev/) for end-to-end testing across modern browsers.
 
 ## Getting Started Locally
 

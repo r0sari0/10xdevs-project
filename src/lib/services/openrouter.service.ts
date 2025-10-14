@@ -101,6 +101,13 @@ export class OpenRouterService {
     // Wykonanie wywołania API
     const response = await this.#performApiCall(payload);
 
+    // Walidacja struktury odpowiedzi
+    if (!response.choices || !Array.isArray(response.choices) || response.choices.length === 0) {
+      throw new OpenRouterResponseValidationError(
+        "Odpowiedź API nie zawierała prawidłowej tablicy wyborów."
+      );
+    }
+
     // Ekstrakcja treści odpowiedzi
     const content = response.choices[0]?.message?.content;
 
