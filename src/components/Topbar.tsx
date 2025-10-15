@@ -16,7 +16,7 @@ import type { User } from "@supabase/supabase-js";
 export default function Topbar() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const supabase = useMemo(() => typeof window !== 'undefined' ? createBrowserClient() : null, []);
+  const supabase = useMemo(() => (typeof window !== "undefined" ? createBrowserClient() : null), []);
 
   useEffect(() => {
     if (!supabase) {
@@ -31,7 +31,9 @@ export default function Topbar() {
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
@@ -78,17 +80,15 @@ export default function Topbar() {
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col gap-1">
                   <p className="text-sm font-medium leading-none">Konto</p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user.email}
-                  </p>
+                  <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onSelect={() => {
-                  const form = document.createElement('form');
-                  form.method = 'POST';
-                  form.action = '/api/auth/signout';
+                  const form = document.createElement("form");
+                  form.method = "POST";
+                  form.action = "/api/auth/signout";
                   document.body.appendChild(form);
                   form.submit();
                 }}
@@ -112,5 +112,3 @@ export default function Topbar() {
     </nav>
   );
 }
-
-

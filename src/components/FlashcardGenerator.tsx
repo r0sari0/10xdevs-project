@@ -79,13 +79,11 @@ function useFlashcardGenerator() {
       const data: CreateGenerationResponseDto = await response.json();
 
       // Mapowanie na ViewModel
-      const viewModels: FlashcardProposalViewModel[] = data.flashcards_proposals.map(
-        (proposal, index) => ({
-          ...proposal,
-          id: `${data.generation_id}-${index}`,
-          isEdited: false,
-        })
-      );
+      const viewModels: FlashcardProposalViewModel[] = data.flashcards_proposals.map((proposal, index) => ({
+        ...proposal,
+        id: `${data.generation_id}-${index}`,
+        isEdited: false,
+      }));
 
       setProposals(viewModels);
       setStatus("success");
@@ -103,11 +101,7 @@ function useFlashcardGenerator() {
    */
   const handleUpdateProposal = useCallback((id: string, front: string, back: string) => {
     setProposals((prev) =>
-      prev.map((proposal) =>
-        proposal.id === id
-          ? { ...proposal, front, back, isEdited: true }
-          : proposal
-      )
+      prev.map((proposal) => (proposal.id === id ? { ...proposal, front, back, isEdited: true } : proposal))
     );
   }, []);
 
@@ -131,7 +125,9 @@ function useFlashcardGenerator() {
     setIsSaving(true);
     setError(null);
 
-    const savingToast = toast.loading(`Zapisywanie ${proposals.length} ${proposals.length === 1 ? "fiszki" : "fiszek"}...`);
+    const savingToast = toast.loading(
+      `Zapisywanie ${proposals.length} ${proposals.length === 1 ? "fiszki" : "fiszek"}...`
+    );
 
     try {
       const commands: CreateFlashcardCommand[] = proposals.map((proposal) => ({
@@ -238,19 +234,12 @@ export default function FlashcardGenerator() {
     <div className="container mx-auto py-8 px-4 max-w-6xl">
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">Generator Fiszek</h1>
-        <p className="text-gray-600">
-          Wklej tekst i wygeneruj fiszki automatycznie za pomocą AI
-        </p>
+        <p className="text-gray-600">Wklej tekst i wygeneruj fiszki automatycznie za pomocą AI</p>
       </div>
 
       {/* Input tekstowy */}
       <div className="mb-6">
-        <SourceTextInput
-          value={sourceText}
-          onTextChange={setSourceText}
-          minLength={minLength}
-          maxLength={maxLength}
-        />
+        <SourceTextInput value={sourceText} onTextChange={setSourceText} minLength={minLength} maxLength={maxLength} />
       </div>
 
       {/* Przycisk generowania */}
@@ -278,18 +267,8 @@ export default function FlashcardGenerator() {
               className="text-red-700 hover:text-red-900 ml-4"
               aria-label="Zamknij komunikat o błędzie"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
@@ -317,4 +296,3 @@ export default function FlashcardGenerator() {
     </div>
   );
 }
-

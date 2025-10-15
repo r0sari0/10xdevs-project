@@ -38,4 +38,3 @@ export type AIFlashcard = z.infer<typeof AIFlashcardSchema>;
  * Typ dla odpowiedzi AI z listą fiszek
  */
 export type AIFlashcardsResponse = z.infer<typeof AIFlashcardsResponseSchema>;
-

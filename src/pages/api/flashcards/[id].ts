@@ -18,11 +18,7 @@ export const GET: APIRoute = async (context) => {
   }
 
   try {
-    const flashcard = await flashcardService.getFlashcardById(
-      context.locals.supabase,
-      flashcardId,
-      DEFAULT_USER_ID
-    );
+    const flashcard = await flashcardService.getFlashcardById(context.locals.supabase, flashcardId, DEFAULT_USER_ID);
 
     if (!flashcard) {
       return new Response("Flashcard not found.", { status: 404 });
@@ -35,6 +31,7 @@ export const GET: APIRoute = async (context) => {
       },
     });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Error fetching flashcard:", error);
     return new Response("An internal server error occurred.", { status: 500 });
   }
@@ -57,7 +54,7 @@ export const PUT: APIRoute = async (context) => {
   let body;
   try {
     body = await context.request.json();
-  } catch (error) {
+  } catch {
     return new Response(JSON.stringify({ error: "Invalid JSON body." }), { status: 400 });
   }
 
@@ -89,6 +86,7 @@ export const PUT: APIRoute = async (context) => {
       },
     });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Error updating flashcard:", error);
     return new Response(JSON.stringify({ error: "An internal server error occurred." }), {
       status: 500,
@@ -109,11 +107,7 @@ export const DELETE: APIRoute = async (context) => {
   }
 
   try {
-    const deletedCount = await flashcardService.deleteFlashcard(
-      context.locals.supabase,
-      flashcardId,
-      DEFAULT_USER_ID
-    );
+    const deletedCount = await flashcardService.deleteFlashcard(context.locals.supabase, flashcardId, DEFAULT_USER_ID);
 
     if (deletedCount === 0) {
       return new Response("Flashcard not found or you do not have permission to delete it.", {
@@ -123,6 +117,7 @@ export const DELETE: APIRoute = async (context) => {
 
     return new Response(null, { status: 204 });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Error deleting flashcard:", error);
     return new Response("An internal server error occurred.", { status: 500 });
   }

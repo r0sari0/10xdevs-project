@@ -9,9 +9,9 @@ import { toast } from "sonner";
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; password?: string; }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = useMemo(() => typeof window !== 'undefined' ? createBrowserClient() : null, []);
+  const supabase = useMemo(() => (typeof window !== "undefined" ? createBrowserClient() : null), []);
 
   const validateForm = () => {
     const newErrors: typeof errors = {};
@@ -44,7 +44,7 @@ export default function LoginForm() {
 
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      
+
       if (error) {
         switch (error.message) {
           case "Invalid login credentials":
@@ -63,8 +63,7 @@ export default function LoginForm() {
       toast.success("Zalogowano pomyślnie!");
       // Force a full page reload to sync session between client and server
       window.location.replace("/");
-      
-    } catch (error) {
+    } catch {
       toast.error("Wystąpił nieoczekiwany błąd. Spróbuj ponownie.");
     } finally {
       setIsLoading(false);
@@ -75,9 +74,7 @@ export default function LoginForm() {
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Zaloguj się</CardTitle>
-        <CardDescription>
-          Wprowadź swój e-mail i hasło, aby uzyskać dostęp do konta
-        </CardDescription>
+        <CardDescription>Wprowadź swój e-mail i hasło, aby uzyskać dostęp do konta</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
@@ -93,18 +90,13 @@ export default function LoginForm() {
               disabled={isLoading}
               data-testid="email-input"
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Hasło</Label>
-              <a
-                href="/password-reset"
-                className="text-sm text-primary hover:underline"
-              >
+              <a href="/password-reset" className="text-sm text-primary hover:underline">
                 Zapomniałeś hasła?
               </a>
             </div>
@@ -118,9 +110,7 @@ export default function LoginForm() {
               disabled={isLoading}
               data-testid="password-input"
             />
-            {errors.password && (
-              <p className="text-sm text-destructive">{errors.password}</p>
-            )}
+            {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
           </div>
         </CardContent>
 
@@ -139,5 +129,3 @@ export default function LoginForm() {
     </Card>
   );
 }
-
-

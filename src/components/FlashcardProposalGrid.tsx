@@ -28,14 +28,8 @@ export default function FlashcardProposalGrid({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">
-          Propozycje fiszek ({proposals.length})
-        </h2>
-        <Button
-          onClick={onSaveAll}
-          disabled={isSaving || proposals.length === 0}
-          size="lg"
-        >
+        <h2 className="text-2xl font-bold">Propozycje fiszek ({proposals.length})</h2>
+        <Button onClick={onSaveAll} disabled={isSaving || proposals.length === 0} size="lg">
           {isSaving ? "Zapisywanie..." : `Zapisz wszystkie (${proposals.length})`}
         </Button>
       </div>
@@ -52,15 +46,10 @@ export default function FlashcardProposalGrid({
       </div>
 
       <div className="flex justify-end">
-        <Button
-          onClick={onSaveAll}
-          disabled={isSaving || proposals.length === 0}
-          size="lg"
-        >
+        <Button onClick={onSaveAll} disabled={isSaving || proposals.length === 0} size="lg">
           {isSaving ? "Zapisywanie..." : `Zapisz wszystkie (${proposals.length})`}
         </Button>
       </div>
     </div>
   );
 }
-

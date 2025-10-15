@@ -1,4 +1,4 @@
-import type { Page, Locator } from '@playwright/test';
+import type { Page, Locator } from "@playwright/test";
 
 /**
  * Page Object Model dla strony głównej aplikacji
@@ -11,16 +11,16 @@ export class HomePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.topbar = page.getByTestId('topbar');
-    this.userAvatarButton = page.getByTestId('user-avatar-button');
-    this.sourceTextInput = page.getByTestId('source-text-input');
+    this.topbar = page.getByTestId("topbar");
+    this.userAvatarButton = page.getByTestId("user-avatar-button");
+    this.sourceTextInput = page.getByTestId("source-text-input");
   }
 
   /**
    * Przechodzi do strony głównej
    */
   async goto() {
-    await this.page.goto('/');
+    await this.page.goto("/");
   }
 
   /**
@@ -30,4 +30,3 @@ export class HomePage {
     return await this.userAvatarButton.isVisible();
   }
 }
-

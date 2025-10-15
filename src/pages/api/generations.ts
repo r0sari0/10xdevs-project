@@ -47,6 +47,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Generation endpoint error:", error);
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,

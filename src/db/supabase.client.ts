@@ -49,17 +49,17 @@ let browserClientInstance: SupabaseClient<Database> | null = null;
  */
 const browserCookieStorage = {
   getItem: (key: string) => {
-    if (typeof document === 'undefined') return null;
-    const cookies = document.cookie.split('; ');
-    const cookie = cookies.find(c => c.startsWith(`${key}=`));
-    return cookie ? decodeURIComponent(cookie.split('=')[1]) : null;
+    if (typeof document === "undefined") return null;
+    const cookies = document.cookie.split("; ");
+    const cookie = cookies.find((c) => c.startsWith(`${key}=`));
+    return cookie ? decodeURIComponent(cookie.split("=")[1]) : null;
   },
   setItem: (key: string, value: string) => {
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
     document.cookie = `${key}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax`;
   },
   removeItem: (key: string) => {
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
     document.cookie = `${key}=; path=/; max-age=0`;
   },
 };
@@ -68,13 +68,13 @@ const browserCookieStorage = {
  * Creates a Supabase client for client-side use (browser)
  * Uses singleton pattern to ensure one instance across all components
  * Uses PUBLIC environment variables
- * 
+ *
  * NOTE: This should only be called in browser context (e.g., inside useEffect or event handlers)
  */
 export function createBrowserClient(): SupabaseClient<Database> {
   // Guard against SSR - should never happen if used correctly
-  if (typeof window === 'undefined') {
-    throw new Error('createBrowserClient() can only be called in browser context');
+  if (typeof window === "undefined") {
+    throw new Error("createBrowserClient() can only be called in browser context");
   }
 
   if (browserClientInstance) {

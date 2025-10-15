@@ -7,9 +7,11 @@ const publicRoutes = ["/login", "/register", "/password-reset"];
 export const onRequest = defineMiddleware(async (context, next) => {
   // Create Supabase client with cookie support
   const supabase = createServerClient(context.cookies);
-  
+
   // Get session from Supabase
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   const user = session?.user ?? null;
 
   // Make Supabase client, session, and user available to all routes

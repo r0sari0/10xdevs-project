@@ -12,7 +12,7 @@ import {
 
 // Mock zod-to-json-schema
 vi.mock("zod-to-json-schema", () => ({
-  default: vi.fn((schema) => ({
+  default: vi.fn(() => ({
     $schema: "http://json-schema.org/draft-07/schema#",
     type: "object",
     properties: {
@@ -25,11 +25,7 @@ vi.mock("zod-to-json-schema", () => ({
 
 describe("OpenRouterService", () => {
   // Helper do mockowania globalnego fetch
-  const mockFetch = (
-    status: number,
-    responseBody: unknown,
-    shouldReject = false
-  ) => {
+  const mockFetch = (status: number, responseBody: unknown, shouldReject = false) => {
     const mockResponse = {
       ok: status >= 200 && status < 300,
       status,
@@ -37,8 +33,7 @@ describe("OpenRouterService", () => {
     };
 
     if (shouldReject) {
-      return vi
-        .stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Network error")));
+      return vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Network error")));
     }
 
     return vi.stubGlobal("fetch", vi.fn().mockResolvedValue(mockResponse));
@@ -67,9 +62,7 @@ describe("OpenRouterService", () => {
       // Nie stubujemy zmiennej, więc będzie undefined
 
       // Act & Assert
-      expect(() => new OpenRouterService()).toThrow(
-        "Zmienna środowiskowa OPENROUTER_API_KEY nie jest ustawiona."
-      );
+      expect(() => new OpenRouterService()).toThrow("Zmienna środowiskowa OPENROUTER_API_KEY nie jest ustawiona.");
     });
 
     it("should throw error when OPENROUTER_API_KEY is empty string", () => {
@@ -77,9 +70,7 @@ describe("OpenRouterService", () => {
       vi.stubEnv("OPENROUTER_API_KEY", "");
 
       // Act & Assert
-      expect(() => new OpenRouterService()).toThrow(
-        "Zmienna środowiskowa OPENROUTER_API_KEY nie jest ustawiona."
-      );
+      expect(() => new OpenRouterService()).toThrow("Zmienna środowiskowa OPENROUTER_API_KEY nie jest ustawiona.");
     });
 
     it("should use default site URL when ASTRO_SITE_URL is not set", () => {
@@ -634,10 +625,7 @@ describe("OpenRouterService", () => {
       it("should wrap non-OpenRouter errors as OpenRouterNetworkError", async () => {
         // Arrange
         const responseSchema = z.object({ data: z.string() });
-        vi.stubGlobal(
-          "fetch",
-          vi.fn().mockRejectedValue(new TypeError("Failed to fetch"))
-        );
+        vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("Failed to fetch")));
 
         const service = new OpenRouterService();
 
@@ -828,11 +816,8 @@ describe("OpenRouterService", () => {
         // Assert
         const fetchCall = vi.mocked(fetch).mock.calls[0];
         const requestBody = JSON.parse(fetchCall[1]?.body as string);
-        expect(requestBody.response_format.json_schema.schema).not.toHaveProperty(
-          "$schema"
-        );
+        expect(requestBody.response_format.json_schema.schema).not.toHaveProperty("$schema");
       });
     });
   });
 });
-

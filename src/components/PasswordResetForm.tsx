@@ -12,7 +12,7 @@ export default function PasswordResetForm() {
   const [errors, setErrors] = useState<{ email?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const supabase = useMemo(() => typeof window !== 'undefined' ? createBrowserClient() : null, []);
+  const supabase = useMemo(() => (typeof window !== "undefined" ? createBrowserClient() : null), []);
 
   const validateForm = () => {
     const newErrors: typeof errors = {};
@@ -39,17 +39,17 @@ export default function PasswordResetForm() {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/callback?type=recovery`
+        redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
       });
-      
+
       if (error) {
         toast.error("Wystąpił błąd podczas wysyłania linku resetującego.");
         return;
       }
-      
+
       setSuccess(true);
       toast.success("Link do resetowania hasła został wysłany!");
-    } catch (error) {
+    } catch {
       toast.error("Wystąpił nieoczekiwany błąd. Spróbuj ponownie.");
     } finally {
       setIsLoading(false);
@@ -67,9 +67,7 @@ export default function PasswordResetForm() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="rounded-md bg-primary/10 p-4 text-sm">
-            <p className="mb-2">
-              Kliknij link w wiadomości e-mail, aby ustawić nowe hasło.
-            </p>
+            <p className="mb-2">Kliknij link w wiadomości e-mail, aby ustawić nowe hasło.</p>
             <p className="text-muted-foreground">
               Link będzie ważny przez 60 minut. Jeśli nie widzisz wiadomości, sprawdź folder spam.
             </p>
@@ -79,9 +77,9 @@ export default function PasswordResetForm() {
           <Button asChild className="w-full">
             <a href="/login">Przejdź do logowania</a>
           </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full" 
+          <Button
+            variant="ghost"
+            className="w-full"
             onClick={() => {
               setSuccess(false);
               setEmail("");
@@ -98,9 +96,7 @@ export default function PasswordResetForm() {
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Resetuj hasło</CardTitle>
-        <CardDescription>
-          Wprowadź swój e-mail, a wyślemy Ci link do resetowania hasła
-        </CardDescription>
+        <CardDescription>Wprowadź swój e-mail, a wyślemy Ci link do resetowania hasła</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
@@ -115,9 +111,7 @@ export default function PasswordResetForm() {
               aria-invalid={!!errors.email}
               disabled={isLoading}
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
           </div>
         </CardContent>
 
@@ -136,5 +130,3 @@ export default function PasswordResetForm() {
     </Card>
   );
 }
-
-
