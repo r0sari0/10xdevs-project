@@ -1,6 +1,5 @@
 import type {
   CreateFlashcardCommand,
-  Flashcard,
   FlashcardDto,
   GetFlashcardsQueryDto,
   PaginatedResponseDto,
@@ -35,6 +34,7 @@ export class FlashcardService {
     const { data, error, count } = await queryBuilder;
 
     if (error) {
+      // eslint-disable-next-line no-console
       console.error("Error fetching flashcards:", error);
       throw new Error("Could not fetch flashcards.");
     }
@@ -69,13 +69,11 @@ export class FlashcardService {
       user_id: userId,
     }));
 
-    const { data, error } = await supabase
-      .from("flashcards")
-      .insert(flashcardsToCreate)
-      .select();
+    const { data, error } = await supabase.from("flashcards").insert(flashcardsToCreate).select();
 
     if (error) {
       // TODO: Add proper logging
+      // eslint-disable-next-line no-console
       console.error("Error creating flashcards:", error);
       throw new Error("Could not create flashcards.");
     }
@@ -115,6 +113,7 @@ export class FlashcardService {
         return null;
       }
       // TODO: Add proper logging
+      // eslint-disable-next-line no-console
       console.error(`Error fetching flashcard with id ${id}:`, error);
       throw new Error("Could not fetch flashcard.");
     }
@@ -137,6 +136,7 @@ export class FlashcardService {
 
     if (fetchError || !existingFlashcard) {
       if (fetchError && fetchError.code !== "PGRST116") {
+        // eslint-disable-next-line no-console
         console.error(`Error fetching flashcard with id ${id} for update:`, fetchError);
         throw new Error("Could not fetch flashcard before update.");
       }
@@ -160,6 +160,7 @@ export class FlashcardService {
       .single();
 
     if (error) {
+      // eslint-disable-next-line no-console
       console.error(`Error updating flashcard with id ${id}:`, error);
       throw new Error("Could not update flashcard.");
     }
@@ -167,17 +168,14 @@ export class FlashcardService {
     return data;
   }
 
-  public async deleteFlashcard(
-    supabase: SupabaseClient<Database>,
-    id: number,
-    userId: string
-  ): Promise<number> {
+  public async deleteFlashcard(supabase: SupabaseClient<Database>, id: number, userId: string): Promise<number> {
     const { count, error } = await supabase
       .from("flashcards")
       .delete({ count: "exact" })
       .match({ id: id, user_id: userId });
 
     if (error) {
+      // eslint-disable-next-line no-console
       console.error(`Error deleting flashcard with id ${id}:`, error);
       throw new Error("Could not delete flashcard.");
     }

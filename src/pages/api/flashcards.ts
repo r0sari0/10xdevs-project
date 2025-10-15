@@ -1,10 +1,7 @@
 import type { APIContext } from "astro";
 import { ZodError } from "zod";
 import { flashcardService } from "../../lib/services/flashcard.service";
-import {
-  createFlashcardsSchema,
-  getFlashcardsQuerySchema,
-} from "../../lib/schemas/flashcard.schema";
+import { createFlashcardsSchema, getFlashcardsQuerySchema } from "../../lib/schemas/flashcard.schema";
 import { DEFAULT_USER_ID } from "../../db/supabase.client";
 
 export const prerender = false;
@@ -27,16 +24,14 @@ export async function GET(context: APIContext): Promise<Response> {
       );
     }
 
-    const paginatedResponse = await flashcardService.getFlashcards(
-      context.locals.supabase,
-      validationResult.data
-    );
+    const paginatedResponse = await flashcardService.getFlashcards(context.locals.supabase, validationResult.data);
 
     return new Response(JSON.stringify(paginatedResponse), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Error in GET /api/flashcards:", error);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
@@ -75,6 +70,7 @@ export async function POST(context: APIContext): Promise<Response> {
     }
 
     // TODO: Add proper logging
+    // eslint-disable-next-line no-console
     console.error("Error in POST /api/flashcards:", error);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,

@@ -4,11 +4,7 @@ import type { CreateGenerationResponseDto, FlashcardProposalDto } from "../../ty
 import type { SupabaseClient as SupabaseClientType } from "@supabase/supabase-js";
 import { OpenRouterService } from "./openrouter.service";
 import { AIFlashcardsResponseSchema } from "../schemas/ai-response.schema";
-import {
-  OpenRouterError,
-  OpenRouterAuthError,
-  OpenRouterRateLimitError,
-} from "../errors/openrouter.errors";
+import { OpenRouterError, OpenRouterAuthError, OpenRouterRateLimitError } from "../errors/openrouter.errors";
 
 export class GenerationService {
   private readonly openRouterService: OpenRouterService;
@@ -37,7 +33,7 @@ Zwróć odpowiedź w formacie JSON zgodnym ze schematem.`;
   async createGeneration(
     sourceText: string,
     userId: string,
-    supabase: SupabaseClientType
+    supabase: SupabaseClientType<Database>
   ): Promise<CreateGenerationResponseDto> {
     const startTime = Date.now();
 
@@ -131,14 +127,10 @@ Wygeneruj fiszki w formacie JSON.`;
     } catch (error) {
       // Obsługa specyficznych błędów OpenRouter
       if (error instanceof OpenRouterAuthError) {
-        throw new Error(
-          "Błąd uwierzytelniania API OpenRouter. Sprawdź konfigurację klucza API."
-        );
+        throw new Error("Błąd uwierzytelniania API OpenRouter. Sprawdź konfigurację klucza API.");
       }
       if (error instanceof OpenRouterRateLimitError) {
-        throw new Error(
-          "Przekroczono limit zapytań do API OpenRouter. Spróbuj ponownie później."
-        );
+        throw new Error("Przekroczono limit zapytań do API OpenRouter. Spróbuj ponownie później.");
       }
       if (error instanceof OpenRouterError) {
         throw new Error(`Błąd API OpenRouter: ${error.message}`);
@@ -157,7 +149,7 @@ Wygeneruj fiszki w formacie JSON.`;
     userId: string,
     model: string,
     sourceText: string,
-    supabase: SupabaseClientType
+    supabase: SupabaseClientType<Database>
   ): Promise<void> {
     try {
       const sourceTextHash = this.calculateHash(sourceText);
@@ -172,6 +164,7 @@ Wygeneruj fiszki w formacie JSON.`;
         error_message: error.message,
       });
     } catch (logError) {
+      // eslint-disable-next-line no-console
       console.error("Failed to log generation error:", logError);
     }
   }

@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo, useCallback } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,11 +33,11 @@ const FlashcardProposalCard = memo(function FlashcardProposalCard({
     setIsEditing(false);
   };
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = useCallback(() => {
     setEditedFront(proposal.front);
     setEditedBack(proposal.back);
     setIsEditing(false);
-  };
+  }, [proposal.front, proposal.back]);
 
   const handleStartEdit = () => {
     setEditedFront(proposal.front);
@@ -57,7 +57,7 @@ const FlashcardProposalCard = memo(function FlashcardProposalCard({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isEditing]);
+  }, [isEditing, handleCancelEdit]);
 
   return (
     <Card className="h-full flex flex-col">
@@ -75,9 +75,7 @@ const FlashcardProposalCard = memo(function FlashcardProposalCard({
             {/* Tryb edycji */}
             <div className="mb-2 text-xs text-gray-500 flex items-center gap-1">
               <span>Naciśnij</span>
-              <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono">
-                Esc
-              </kbd>
+              <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono">Esc</kbd>
               <span>aby anulować</span>
             </div>
             <div className="space-y-2">
@@ -126,35 +124,19 @@ const FlashcardProposalCard = memo(function FlashcardProposalCard({
       <CardFooter className="flex gap-2 pt-4">
         {isEditing ? (
           <>
-            <Button
-              onClick={handleSaveEdit}
-              disabled={!editedFront.trim() || !editedBack.trim()}
-              className="flex-1"
-            >
+            <Button onClick={handleSaveEdit} disabled={!editedFront.trim() || !editedBack.trim()} className="flex-1">
               Zapisz
             </Button>
-            <Button
-              onClick={handleCancelEdit}
-              variant="outline"
-              className="flex-1"
-            >
+            <Button onClick={handleCancelEdit} variant="outline" className="flex-1">
               Anuluj
             </Button>
           </>
         ) : (
           <>
-            <Button
-              onClick={handleStartEdit}
-              variant="outline"
-              className="flex-1"
-            >
+            <Button onClick={handleStartEdit} variant="outline" className="flex-1">
               Edytuj
             </Button>
-            <Button
-              onClick={onDelete}
-              variant="destructive"
-              className="flex-1"
-            >
+            <Button onClick={onDelete} variant="destructive" className="flex-1">
               Usuń
             </Button>
           </>
@@ -165,4 +147,3 @@ const FlashcardProposalCard = memo(function FlashcardProposalCard({
 });
 
 export default FlashcardProposalCard;
-

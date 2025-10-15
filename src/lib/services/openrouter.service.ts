@@ -42,9 +42,7 @@ export class OpenRouterService {
 
     // Walidacja: rzuca błąd jeśli klucz API nie jest skonfigurowany
     if (!this.apiKey) {
-      throw new Error(
-        "Zmienna środowiskowa OPENROUTER_API_KEY nie jest ustawiona."
-      );
+      throw new Error("Zmienna środowiskowa OPENROUTER_API_KEY nie jest ustawiona.");
     }
   }
 
@@ -63,21 +61,16 @@ export class OpenRouterService {
   public async generateStructuredCompletion<T extends z.ZodTypeAny>(
     options: GenerationOptions<T>
   ): Promise<z.infer<T>> {
-    const {
-      systemPrompt,
-      userPrompt,
-      responseSchema,
-      model = "openai/gpt-4o-mini",
-      params = {},
-    } = options;
+    const { systemPrompt, userPrompt, responseSchema, model = "openai/gpt-4o-mini", params = {} } = options;
 
     // Konwersja schematu Zod na schemat JSON
     // Usuwamy metadane JSON Schema które OpenRouter nie akceptuje
     const rawJsonSchema = zodToJsonSchema(responseSchema, {
       $refStrategy: "none",
     });
-    
+
     // Wyciągamy tylko właściwości schematu bez metadanych ($schema, etc.)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { $schema, ...jsonSchema } = rawJsonSchema as Record<string, unknown>;
 
     // Budowanie payloadu żądania
@@ -103,18 +96,14 @@ export class OpenRouterService {
 
     // Walidacja struktury odpowiedzi
     if (!response.choices || !Array.isArray(response.choices) || response.choices.length === 0) {
-      throw new OpenRouterResponseValidationError(
-        "Odpowiedź API nie zawierała prawidłowej tablicy wyborów."
-      );
+      throw new OpenRouterResponseValidationError("Odpowiedź API nie zawierała prawidłowej tablicy wyborów.");
     }
 
     // Ekstrakcja treści odpowiedzi
     const content = response.choices[0]?.message?.content;
 
     if (typeof content !== "string") {
-      throw new OpenRouterResponseValidationError(
-        "Odpowiedź API nie zawierała treści tekstowej."
-      );
+      throw new OpenRouterResponseValidationError("Odpowiedź API nie zawierała treści tekstowej.");
     }
 
     // Parsowanie treści jako JSON
@@ -122,9 +111,7 @@ export class OpenRouterService {
     try {
       parsedContent = JSON.parse(content);
     } catch {
-      throw new OpenRouterResponseValidationError(
-        "Nie udało się sparsować treści odpowiedzi jako JSON."
-      );
+      throw new OpenRouterResponseValidationError("Nie udało się sparsować treści odpowiedzi jako JSON.");
     }
 
     // Walidacja odpowiedzi zgodnie ze schematem Zod
@@ -147,7 +134,7 @@ export class OpenRouterService {
    * @returns Obietnica z odpowiedzią JSON z API
    * @throws Różne typy błędów OpenRouter w zależności od statusu odpowiedzi
    */
-  async #performApiCall(payload: object): Promise<any> {
+  async #performApiCall(payload: object): Promise<unknown> {
     try {
       const response = await fetch(`${this.apiBaseUrl}/chat/completions`, {
         method: "POST",
@@ -164,27 +151,17 @@ export class OpenRouterService {
         const errorBody = await response.json().catch(() => ({}));
         switch (response.status) {
           case 401:
-            throw new OpenRouterAuthError(
-              "Błąd uwierzytelniania API OpenRouter."
-            );
+            throw new OpenRouterAuthError("Błąd uwierzytelniania API OpenRouter.");
           case 429:
-            throw new OpenRouterRateLimitError(
-              "Przekroczono limit zapytań API OpenRouter."
-            );
+            throw new OpenRouterRateLimitError("Przekroczono limit zapytań API OpenRouter.");
           case 400:
           case 422:
-            throw new OpenRouterRequestError(
-              `Nieprawidłowe żądanie do API OpenRouter: ${JSON.stringify(errorBody)}`
-            );
+            throw new OpenRouterRequestError(`Nieprawidłowe żądanie do API OpenRouter: ${JSON.stringify(errorBody)}`);
           default:
             if (response.status >= 500) {
-              throw new OpenRouterServerError(
-                `Błąd serwera API OpenRouter: ${response.status}`
-              );
+              throw new OpenRouterServerError(`Błąd serwera API OpenRouter: ${response.status}`);
             }
-            throw new OpenRouterServerError(
-              `Nieoczekiwany błąd API OpenRouter: ${response.status}`
-            );
+            throw new OpenRouterServerError(`Nieoczekiwany błąd API OpenRouter: ${response.status}`);
         }
       }
 
@@ -200,4 +177,3 @@ export class OpenRouterService {
     }
   }
 }
-

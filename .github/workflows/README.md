@@ -68,4 +68,5 @@ Raporty są przechowywane jako artifakty przez 30 dni i można je pobrać z zak�
 
 - Workflow ma uprawnienia do zapisu komentarzy w Pull Requests (`pull-requests: write`)
 - Pozostałe uprawnienia są domyślne (odczyt kodu, artifakty)
+- Pozostałe uprawnienia są domyślne (odczyt kodu, artifakty)
 

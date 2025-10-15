@@ -10,14 +10,14 @@ export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState<{ 
-    email?: string; 
-    password?: string; 
-    confirmPassword?: string; 
+  const [errors, setErrors] = useState<{
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
   }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const supabase = useMemo(() => typeof window !== 'undefined' ? createBrowserClient() : null, []);
+  const supabase = useMemo(() => (typeof window !== "undefined" ? createBrowserClient() : null), []);
 
   const validateForm = () => {
     const newErrors: typeof errors = {};
@@ -55,14 +55,14 @@ export default function RegisterForm() {
     setErrors({});
 
     try {
-      const { error } = await supabase.auth.signUp({ 
-        email, 
+      const { error } = await supabase.auth.signUp({
+        email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`
-        }
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
-      
+
       if (error) {
         switch (error.message) {
           case "User already registered":
@@ -74,10 +74,10 @@ export default function RegisterForm() {
         }
         return;
       }
-      
+
       setSuccess(true);
       toast.success("Konto utworzone! Sprawdź swoją skrzynkę e-mail.");
-    } catch (error) {
+    } catch {
       toast.error("Wystąpił nieoczekiwany błąd. Spróbuj ponownie.");
     } finally {
       setIsLoading(false);
@@ -95,12 +95,8 @@ export default function RegisterForm() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="rounded-md bg-primary/10 p-4 text-sm">
-            <p className="mb-2">
-              Aby dokończyć rejestrację, kliknij link weryfikacyjny w wiadomości e-mail.
-            </p>
-            <p className="text-muted-foreground">
-              Jeśli nie widzisz wiadomości, sprawdź folder spam.
-            </p>
+            <p className="mb-2">Aby dokończyć rejestrację, kliknij link weryfikacyjny w wiadomości e-mail.</p>
+            <p className="text-muted-foreground">Jeśli nie widzisz wiadomości, sprawdź folder spam.</p>
           </div>
         </CardContent>
         <CardFooter>
@@ -116,9 +112,7 @@ export default function RegisterForm() {
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Utwórz konto</CardTitle>
-        <CardDescription>
-          Wprowadź swój e-mail i hasło, aby utworzyć nowe konto
-        </CardDescription>
+        <CardDescription>Wprowadź swój e-mail i hasło, aby utworzyć nowe konto</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
@@ -133,9 +127,7 @@ export default function RegisterForm() {
               aria-invalid={!!errors.email}
               disabled={isLoading}
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
           </div>
 
           <div className="space-y-2">
@@ -149,9 +141,7 @@ export default function RegisterForm() {
               aria-invalid={!!errors.password}
               disabled={isLoading}
             />
-            {errors.password && (
-              <p className="text-sm text-destructive">{errors.password}</p>
-            )}
+            {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
           </div>
 
           <div className="space-y-2">
@@ -165,9 +155,7 @@ export default function RegisterForm() {
               aria-invalid={!!errors.confirmPassword}
               disabled={isLoading}
             />
-            {errors.confirmPassword && (
-              <p className="text-sm text-destructive">{errors.confirmPassword}</p>
-            )}
+            {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
           </div>
         </CardContent>
 
@@ -186,5 +174,3 @@ export default function RegisterForm() {
     </Card>
   );
 }
-
-

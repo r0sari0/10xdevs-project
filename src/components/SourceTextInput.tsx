@@ -11,12 +11,7 @@ interface SourceTextInputProps {
  * Komponent do wprowadzania tekstu źródłowego przez użytkownika.
  * Zawiera pole textarea i licznik znaków.
  */
-export default function SourceTextInput({
-  value,
-  onTextChange,
-  minLength,
-  maxLength,
-}: SourceTextInputProps) {
+export default function SourceTextInput({ value, onTextChange, minLength, maxLength }: SourceTextInputProps) {
   const currentLength = value.length;
   const isValid = currentLength >= minLength && currentLength <= maxLength;
   const isTooShort = currentLength > 0 && currentLength < minLength;
@@ -49,13 +44,9 @@ export default function SourceTextInput({
           Tekst źródłowy
         </label>
         <p className="text-xs text-gray-500">
-          <kbd className="px-2 py-1 bg-gray-100 border border-gray-300 rounded text-xs font-mono">
-            Ctrl
-          </kbd>
+          <kbd className="px-2 py-1 bg-gray-100 border border-gray-300 rounded text-xs font-mono">Ctrl</kbd>
           {" + "}
-          <kbd className="px-2 py-1 bg-gray-100 border border-gray-300 rounded text-xs font-mono">
-            Enter
-          </kbd>
+          <kbd className="px-2 py-1 bg-gray-100 border border-gray-300 rounded text-xs font-mono">Enter</kbd>
           {" do generowania"}
         </p>
       </div>
@@ -68,10 +59,7 @@ export default function SourceTextInput({
         aria-describedby="char-count-info"
         data-testid="source-text-input"
       />
-      <div
-        id="char-count-info"
-        className="flex items-center justify-between text-sm"
-      >
+      <div id="char-count-info" className="flex items-center justify-between text-sm">
         <p className="text-gray-600">{getHelperText()}</p>
         <p className={`font-medium ${getCharCountColor()}`}>
           {currentLength} / {maxLength}
@@ -80,4 +68,3 @@ export default function SourceTextInput({
     </div>
   );
 }
-

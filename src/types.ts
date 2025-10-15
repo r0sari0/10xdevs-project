@@ -1,9 +1,6 @@
 import { z } from "zod";
-import type {
-  getFlashcardsQuerySchema,
-  updateFlashcardCommandSchema,
-} from "./lib/schemas/flashcard.schema";
-import type { Tables, TablesInsert, TablesUpdate } from "./db/database.types";
+import type { getFlashcardsQuerySchema, updateFlashcardCommandSchema } from "./lib/schemas/flashcard.schema";
+import type { Tables, TablesInsert } from "./db/database.types";
 
 // #region Database Entities
 /**
