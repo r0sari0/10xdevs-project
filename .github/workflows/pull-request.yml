@@ -69,6 +69,7 @@ jobs:
       - name: Check job statuses
         id: check-status
         run: |
+          # Set status
           if [ "${{ needs.lint.result }}" == "success" ] && \
              [ "${{ needs.unit-test.result }}" == "success" ] && \
              [ "${{ needs.build.result }}" == "success" ]; then
@@ -77,6 +78,25 @@ jobs:
           else
             echo "status=failure" >> $GITHUB_OUTPUT
             echo "message=❌ Some checks failed. Please review the failed jobs." >> $GITHUB_OUTPUT
+          fi
+          
+          # Set emoji for each job
+          if [ "${{ needs.lint.result }}" == "success" ]; then
+            echo "lint_emoji=✅" >> $GITHUB_OUTPUT
+          else
+            echo "lint_emoji=❌" >> $GITHUB_OUTPUT
+          fi
+          
+          if [ "${{ needs.unit-test.result }}" == "success" ]; then
+            echo "unit_test_emoji=✅" >> $GITHUB_OUTPUT
+          else
+            echo "unit_test_emoji=❌" >> $GITHUB_OUTPUT
+          fi
+          
+          if [ "${{ needs.build.result }}" == "success" ]; then
+            echo "build_emoji=✅" >> $GITHUB_OUTPUT
+          else
+            echo "build_emoji=❌" >> $GITHUB_OUTPUT
           fi
       
       - name: Comment PR
@@ -91,9 +111,9 @@ jobs:
             ${message}
             
             ### Job Results:
-            - **Lint**: ${{ needs.lint.result == 'success' ? '✅' : '❌' }} ${{ needs.lint.result }}
-            - **Unit Tests**: ${{ needs.unit-test.result == 'success' ? '✅' : '❌' }} ${{ needs.unit-test.result }}
-            - **Build**: ${{ needs.build.result == 'success' ? '✅' : '❌' }} ${{ needs.build.result }}
+            - **Lint**: ${{ steps.check-status.outputs.lint_emoji }} ${{ needs.lint.result }}
+            - **Unit Tests**: ${{ steps.check-status.outputs.unit_test_emoji }} ${{ needs.unit-test.result }}
+            - **Build**: ${{ steps.check-status.outputs.build_emoji }} ${{ needs.build.result }}
             
             ---
             *Workflow run: [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*`;
