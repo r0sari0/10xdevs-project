@@ -26,4 +26,6 @@ playwright-report/
 test-results/
 .env.test
 
+# coverage reports
+coverage/
 
