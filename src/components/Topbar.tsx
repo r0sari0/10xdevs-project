@@ -57,7 +57,7 @@ export default function Topbar() {
   }
 
   return (
-    <nav className="container mx-auto flex h-16 items-center justify-between px-4">
+    <nav className="container mx-auto flex h-16 items-center justify-between px-4" data-testid="topbar">
       <a href="/" className="flex items-center gap-2">
         <div className="text-xl font-bold">Flashcards</div>
       </a>
@@ -66,7 +66,7 @@ export default function Topbar() {
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative size-9 rounded-full p-0">
+              <Button variant="ghost" className="relative size-9 rounded-full p-0" data-testid="user-avatar-button">
                 <Avatar className="size-9">
                   <AvatarFallback className="bg-primary text-primary-foreground">
                     {getInitials(user.email ?? "")}

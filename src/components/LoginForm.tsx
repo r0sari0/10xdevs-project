@@ -91,6 +91,7 @@ export default function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               aria-invalid={!!errors.email}
               disabled={isLoading}
+              data-testid="email-input"
             />
             {errors.email && (
               <p className="text-sm text-destructive">{errors.email}</p>
@@ -115,6 +116,7 @@ export default function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               aria-invalid={!!errors.password}
               disabled={isLoading}
+              data-testid="password-input"
             />
             {errors.password && (
               <p className="text-sm text-destructive">{errors.password}</p>
@@ -123,7 +125,7 @@ export default function LoginForm() {
         </CardContent>
 
         <CardFooter className="flex flex-col gap-4">
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full" disabled={isLoading} data-testid="login-button">
             {isLoading ? "Logowanie..." : "Zaloguj się"}
           </Button>
           <p className="text-center text-sm text-muted-foreground">

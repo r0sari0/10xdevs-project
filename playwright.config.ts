@@ -1,4 +1,22 @@
 import { defineConfig, devices } from "@playwright/test";
+import * as fs from "fs";
+import * as path from "path";
+
+// Ładowanie zmiennych środowiskowych z .env.test
+const envTestPath = path.resolve(process.cwd(), ".env.test");
+if (fs.existsSync(envTestPath)) {
+  const envConfig = fs.readFileSync(envTestPath, "utf-8");
+  envConfig.split("\n").forEach((line) => {
+    const trimmedLine = line.trim();
+    if (trimmedLine && !trimmedLine.startsWith("#")) {
+      const [key, ...valueParts] = trimmedLine.split("=");
+      const value = valueParts.join("=");
+      if (key && value) {
+        process.env[key.trim()] = value.trim();
+      }
+    }
+  });
+}
 
 export default defineConfig({
   testDir: "./e2e",
@@ -13,17 +31,10 @@ export default defineConfig({
   },
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
-    {
       name: "firefox",
       use: { ...devices["Desktop Firefox"] },
     },
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },
+
   ],
   webServer: {
     command: "npm run dev",

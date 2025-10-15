@@ -66,6 +66,7 @@ export default function SourceTextInput({
         placeholder="Wklej tutaj tekst, z którego chcesz wygenerować fiszki..."
         className="min-h-[200px] resize-y"
         aria-describedby="char-count-info"
+        data-testid="source-text-input"
       />
       <div
         id="char-count-info"
