@@ -37,7 +37,8 @@ export class OpenRouterService {
 
   constructor() {
     // Pobiera klucz API ze zmiennych środowiskowych serwera
-    this.apiKey = import.meta.env.OPENROUTER_API_KEY;
+    // Dla Cloudflare Pages: próbuje najpierw OPENROUTER_API_KEY, potem PUBLIC_OPENROUTER_API_KEY
+    this.apiKey = import.meta.env.OPENROUTER_API_KEY || import.meta.env.PUBLIC_OPENROUTER_API_KEY;
     this.siteUrl = import.meta.env.ASTRO_SITE_URL ?? "http://localhost";
 
     // Walidacja: rzuca błąd jeśli klucz API nie jest skonfigurowany
