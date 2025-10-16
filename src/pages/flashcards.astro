@@ -1,0 +1,13 @@
+---
+import Layout from "../layouts/Layout.astro";
+import FlashcardListPage from "../components/FlashcardListPage";
+
+// Ensure user is authenticated
+if (!Astro.locals.user) {
+  return Astro.redirect("/login");
+}
+---
+
+<Layout>
+  <FlashcardListPage client:load />
+</Layout>

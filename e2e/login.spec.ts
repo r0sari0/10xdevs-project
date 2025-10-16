@@ -26,11 +26,13 @@ test.describe("Logowanie użytkownika", () => {
     // Perform login
     await loginPage.login(email, password);
 
-    // Wait for navigation to complete
-    await page.waitForURL("/", { timeout: 10000 });
+    // Wait for page to fully load after redirect/navigation
+    await page.waitForLoadState("networkidle", { timeout: 15000 });
 
-    // Assert
+    // Wait for topbar first (should always be visible)
+    await expect(homePage.topbar).toBeVisible({ timeout: 10000 });
+
+    // Then wait for user avatar button (indicates authenticated state)
     await expect(homePage.userAvatarButton).toBeVisible({ timeout: 10000 });
-    await expect(homePage.topbar).toBeVisible();
   });
 });

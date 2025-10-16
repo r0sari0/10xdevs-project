@@ -64,6 +64,23 @@ export default function Topbar() {
         <div className="text-xl font-bold">Flashcards</div>
       </a>
 
+      {user && (
+        <div className="flex items-center gap-6">
+          <a
+            href="/generate"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Generator
+          </a>
+          <a
+            href="/flashcards"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Moje Fiszki
+          </a>
+        </div>
+      )}
+
       <div className="flex items-center gap-2">
         {user ? (
           <DropdownMenu>

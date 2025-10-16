@@ -7,6 +7,14 @@ export const prerender = false;
 
 export async function GET(context: APIContext): Promise<Response> {
   try {
+    // Check if user is authenticated
+    if (!context.locals.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized - user not authenticated" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const queryParams = Object.fromEntries(context.url.searchParams.entries());
     const validationResult = getFlashcardsQuerySchema.safeParse(queryParams);
 
@@ -23,7 +31,11 @@ export async function GET(context: APIContext): Promise<Response> {
       );
     }
 
-    const paginatedResponse = await flashcardService.getFlashcards(context.locals.supabase, validationResult.data);
+    const paginatedResponse = await flashcardService.getFlashcards(
+      context.locals.supabase,
+      validationResult.data,
+      context.locals.user.id
+    );
 
     return new Response(JSON.stringify(paginatedResponse), {
       status: 200,
@@ -43,13 +55,10 @@ export async function POST(context: APIContext): Promise<Response> {
   try {
     // Check if user is authenticated
     if (!context.locals.user) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized - user not authenticated" }),
-        {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return new Response(JSON.stringify({ error: "Unauthorized - user not authenticated" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     const flashcardsData = await context.request.json();

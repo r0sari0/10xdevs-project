@@ -10,13 +10,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
   try {
     // Check if user is authenticated
     if (!locals.user) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized - user not authenticated" }),
-        {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return new Response(JSON.stringify({ error: "Unauthorized - user not authenticated" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Parse and validate request body
