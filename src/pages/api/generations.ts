@@ -1,7 +1,6 @@
 import type { APIRoute } from "astro";
 import { CreateGenerationSchema } from "../../lib/schemas/generation.schema";
 import { GenerationService } from "../../lib/services/generation.service";
-import { DEFAULT_USER_ID } from "../../db/supabase.client";
 
 export const prerender = false;
 
@@ -9,6 +8,17 @@ const generationService = new GenerationService();
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
+    // Check if user is authenticated
+    if (!locals.user) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized - user not authenticated" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     // Parse and validate request body
     let body: unknown;
     try {
@@ -36,8 +46,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     const { source_text } = validationResult.data;
 
-    // Use default test user ID for now
-    const userId = DEFAULT_USER_ID;
+    // Use authenticated user's ID
+    const userId = locals.user.id;
 
     // Create generation using service
     const result = await generationService.createGeneration(source_text, userId, locals.supabase);

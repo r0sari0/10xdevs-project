@@ -2,7 +2,6 @@ import type { APIContext } from "astro";
 import { ZodError } from "zod";
 import { flashcardService } from "../../lib/services/flashcard.service";
 import { createFlashcardsSchema, getFlashcardsQuerySchema } from "../../lib/schemas/flashcard.schema";
-import { DEFAULT_USER_ID } from "../../db/supabase.client";
 
 export const prerender = false;
 
@@ -42,12 +41,23 @@ export async function GET(context: APIContext): Promise<Response> {
 
 export async function POST(context: APIContext): Promise<Response> {
   try {
+    // Check if user is authenticated
+    if (!context.locals.user) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized - user not authenticated" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const flashcardsData = await context.request.json();
     const validatedData = createFlashcardsSchema.parse(flashcardsData);
 
     const newFlashcards = await flashcardService.createFlashcards(
       context.locals.supabase,
-      DEFAULT_USER_ID,
+      context.locals.user.id,
       validatedData
     );
 

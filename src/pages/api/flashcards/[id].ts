@@ -1,6 +1,5 @@
 import type { APIRoute } from "astro";
 import { flashcardService } from "../../../lib/services/flashcard.service";
-import { DEFAULT_USER_ID } from "../../../db/supabase.client";
 import { updateFlashcardCommandSchema } from "../../../lib/schemas/flashcard.schema";
 
 export const prerender = false;
@@ -18,7 +17,7 @@ export const GET: APIRoute = async (context) => {
   }
 
   try {
-    const flashcard = await flashcardService.getFlashcardById(context.locals.supabase, flashcardId, DEFAULT_USER_ID);
+    const flashcard = await flashcardService.getFlashcardById(context.locals.supabase, flashcardId, context.locals.user?.id);
 
     if (!flashcard) {
       return new Response("Flashcard not found.", { status: 404 });
@@ -38,6 +37,17 @@ export const GET: APIRoute = async (context) => {
 };
 
 export const PUT: APIRoute = async (context) => {
+  // Check if user is authenticated
+  if (!context.locals.user) {
+    return new Response(
+      JSON.stringify({ error: "Unauthorized - user not authenticated" }),
+      {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
   const { id } = context.params;
 
   if (!id) {
@@ -69,7 +79,7 @@ export const PUT: APIRoute = async (context) => {
     const updatedFlashcard = await flashcardService.updateFlashcard(
       context.locals.supabase,
       flashcardId,
-      DEFAULT_USER_ID,
+      context.locals.user.id,
       validationResult.data
     );
 
@@ -95,6 +105,17 @@ export const PUT: APIRoute = async (context) => {
 };
 
 export const DELETE: APIRoute = async (context) => {
+  // Check if user is authenticated
+  if (!context.locals.user) {
+    return new Response(
+      JSON.stringify({ error: "Unauthorized - user not authenticated" }),
+      {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
   const { id } = context.params;
 
   if (!id) {
@@ -107,7 +128,7 @@ export const DELETE: APIRoute = async (context) => {
   }
 
   try {
-    const deletedCount = await flashcardService.deleteFlashcard(context.locals.supabase, flashcardId, DEFAULT_USER_ID);
+    const deletedCount = await flashcardService.deleteFlashcard(context.locals.supabase, flashcardId, context.locals.user.id);
 
     if (deletedCount === 0) {
       return new Response("Flashcard not found or you do not have permission to delete it.", {
