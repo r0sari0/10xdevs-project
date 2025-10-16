@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import type { Database } from "../../db/database.types";
 import type { CreateGenerationResponseDto, FlashcardProposalDto } from "../../types";
 import type { SupabaseClient as SupabaseClientType } from "@supabase/supabase-js";
@@ -39,7 +38,7 @@ Zwróć odpowiedź w formacie JSON zgodnym ze schematem.`;
 
     try {
       // Calculate hash and length
-      const sourceTextHash = this.calculateHash(sourceText);
+      const sourceTextHash = await this.calculateHash(sourceText);
       const sourceTextLength = sourceText.length;
 
       // Generate flashcards using AI
@@ -81,10 +80,16 @@ Zwróć odpowiedź w formacie JSON zgodnym ze schematem.`;
   }
 
   /**
-   * Calculates SHA-256 hash of the source text.
+   * Calculates SHA-256 hash of the source text using Web Crypto API.
+   * Compatible with Cloudflare Pages and all modern browsers.
    */
-  private calculateHash(text: string): string {
-    return createHash("sha256").update(text).digest("hex");
+  private async calculateHash(text: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    return hashHex;
   }
 
   /**
@@ -152,7 +157,7 @@ Wygeneruj fiszki w formacie JSON.`;
     supabase: SupabaseClientType<Database>
   ): Promise<void> {
     try {
-      const sourceTextHash = this.calculateHash(sourceText);
+      const sourceTextHash = await this.calculateHash(sourceText);
       const sourceTextLength = sourceText.length;
 
       await supabase.from("generation_error_logs").insert({
