@@ -5,6 +5,14 @@ import { updateFlashcardCommandSchema } from "../../../lib/schemas/flashcard.sch
 export const prerender = false;
 
 export const GET: APIRoute = async (context) => {
+  // Check if user is authenticated
+  if (!context.locals.user) {
+    return new Response(JSON.stringify({ error: "Unauthorized - user not authenticated" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   const { id } = context.params;
 
   if (!id) {
@@ -17,7 +25,11 @@ export const GET: APIRoute = async (context) => {
   }
 
   try {
-    const flashcard = await flashcardService.getFlashcardById(context.locals.supabase, flashcardId, context.locals.user?.id);
+    const flashcard = await flashcardService.getFlashcardById(
+      context.locals.supabase,
+      flashcardId,
+      context.locals.user.id
+    );
 
     if (!flashcard) {
       return new Response("Flashcard not found.", { status: 404 });
@@ -39,13 +51,10 @@ export const GET: APIRoute = async (context) => {
 export const PUT: APIRoute = async (context) => {
   // Check if user is authenticated
   if (!context.locals.user) {
-    return new Response(
-      JSON.stringify({ error: "Unauthorized - user not authenticated" }),
-      {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return new Response(JSON.stringify({ error: "Unauthorized - user not authenticated" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const { id } = context.params;
@@ -107,13 +116,10 @@ export const PUT: APIRoute = async (context) => {
 export const DELETE: APIRoute = async (context) => {
   // Check if user is authenticated
   if (!context.locals.user) {
-    return new Response(
-      JSON.stringify({ error: "Unauthorized - user not authenticated" }),
-      {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return new Response(JSON.stringify({ error: "Unauthorized - user not authenticated" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const { id } = context.params;
@@ -128,7 +134,11 @@ export const DELETE: APIRoute = async (context) => {
   }
 
   try {
-    const deletedCount = await flashcardService.deleteFlashcard(context.locals.supabase, flashcardId, context.locals.user.id);
+    const deletedCount = await flashcardService.deleteFlashcard(
+      context.locals.supabase,
+      flashcardId,
+      context.locals.user.id
+    );
 
     if (deletedCount === 0) {
       return new Response("Flashcard not found or you do not have permission to delete it.", {

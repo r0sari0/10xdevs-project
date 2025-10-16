@@ -1,8 +1,7 @@
 import { defineMiddleware } from "astro:middleware";
 import { createServerClient } from "../db/supabase.client";
 
-const protectedRoutes = ["/"]; // Strona główna jest chroniona
-const publicRoutes = ["/login", "/register", "/password-reset"];
+const protectedRoutes = ["/", "/flashcards", "/generate"];
 
 export const onRequest = defineMiddleware(async (context, next) => {
   // Create Supabase client with cookie support
@@ -21,14 +20,19 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   const { pathname } = context.url;
 
-  // Redirect to login if accessing protected route without authentication
-  if (protectedRoutes.includes(pathname) && !user) {
-    return context.redirect("/login");
+  // Don't apply middleware to API routes - they handle auth separately
+  if (pathname.startsWith("/api")) {
+    return next();
   }
 
-  // Redirect to home if accessing public auth routes while authenticated
-  if (publicRoutes.includes(pathname) && user) {
-    return context.redirect("/");
+  // Check if route is protected
+  const isProtectedRoute = protectedRoutes.some(
+    (route) => pathname === route || (route !== "/" && pathname.startsWith(route))
+  );
+
+  // Redirect to login if accessing protected route without authentication
+  if (isProtectedRoute && !user) {
+    return context.redirect("/login");
   }
 
   return next();

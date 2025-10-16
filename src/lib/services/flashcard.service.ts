@@ -11,7 +11,8 @@ import type { Database, TablesUpdate } from "../../db/database.types";
 export class FlashcardService {
   public async getFlashcards(
     supabase: SupabaseClient<Database>,
-    query: GetFlashcardsQueryDto
+    query: GetFlashcardsQueryDto,
+    userId: string
   ): Promise<PaginatedResponseDto<FlashcardDto>> {
     const { page, limit, sort, order, source, generation_id } = query;
 
@@ -19,6 +20,9 @@ export class FlashcardService {
     const to = from + limit - 1;
 
     let queryBuilder = supabase.from("flashcards").select("*", { count: "exact" });
+
+    // Security: Filter by user_id to ensure users only see their own flashcards
+    queryBuilder = queryBuilder.eq("user_id", userId);
 
     if (source) {
       queryBuilder = queryBuilder.eq("source", source);
@@ -156,6 +160,7 @@ export class FlashcardService {
       .from("flashcards")
       .update(dataToUpdate)
       .eq("id", id)
+      .eq("user_id", userId)
       .select("id, generation_id, front, back, source, created_at, updated_at")
       .single();
 

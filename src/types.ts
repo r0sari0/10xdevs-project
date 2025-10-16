@@ -122,3 +122,73 @@ export interface CreateGenerationResponseDto {
   generated_count: number;
 }
 // #endregion
+
+// #region ViewModels for FlashcardListPage
+
+/**
+ * Type representing a source of a flashcard for display/styling purposes
+ */
+export type FlashcardSource = "ai-full" | "ai-edited" | "manual";
+
+/**
+ * Labels for flashcard sources in Polish
+ */
+export const FLASHCARD_SOURCE_LABELS: Record<FlashcardSource, string> = {
+  "ai-full": "Wygenerowana przez AI",
+  "ai-edited": "Edytowana wygenerowana",
+  manual: "Ręcznie utworzona",
+};
+
+/**
+ * Color classes for flashcard sources (Tailwind)
+ */
+export const FLASHCARD_SOURCE_COLORS: Record<FlashcardSource, string> = {
+  "ai-full": "bg-blue-100 text-blue-800",
+  "ai-edited": "bg-purple-100 text-purple-800",
+  manual: "bg-green-100 text-green-800",
+};
+
+/**
+ * Internal state of the FlashcardListPage component
+ */
+export interface FlashcardListPageState {
+  // Data
+  flashcards: FlashcardDto[];
+  totalCount: number;
+  currentPage: number;
+  limit: number;
+
+  // UI states
+  isLoading: boolean;
+  isSaving: boolean;
+  error: string | null;
+
+  // Dialog states
+  createDialogOpen: boolean;
+  editDialogOpen: boolean;
+  editingFlashcard: FlashcardDto | null;
+  deleteConfirmOpen: boolean;
+  deletingFlashcard: FlashcardDto | null;
+
+  // Sorting and filtering
+  sortBy: string; // 'created_at', 'updated_at', 'source'
+  sortOrder: "asc" | "desc";
+}
+
+/**
+ * Sort configuration object
+ */
+export interface SortConfig {
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+}
+
+/**
+ * Form validation errors
+ */
+export interface FlashcardFormErrors {
+  front?: string;
+  back?: string;
+}
+
+// #endregion

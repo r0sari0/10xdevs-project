@@ -1,0 +1,13 @@
+---
+import FlashcardGenerator from "../components/FlashcardGenerator";
+import Layout from "../layouts/Layout.astro";
+
+// Ensure user is authenticated
+if (!Astro.locals.user) {
+  return Astro.redirect("/login");
+}
+---
+
+<Layout>
+  <FlashcardGenerator client:only="react" />
+</Layout>
