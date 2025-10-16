@@ -8,10 +8,17 @@ export const DEFAULT_USER_ID = "d87564bf-68ee-461c-a5d1-4591a086d4fe";
 /**
  * Creates a Supabase client for server-side use (SSR)
  * Uses cookies for session management
+ * Uses PUBLIC environment variables (safe for Supabase since anon key is public)
  */
 export function createServerClient(cookies: AstroCookies): SupabaseClient<Database> {
-  const supabaseUrl = import.meta.env.SUPABASE_URL;
-  const supabaseAnonKey = import.meta.env.SUPABASE_KEY;
+  const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      `Missing Supabase credentials. Please ensure PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY are set in your environment variables.`
+    );
+  }
 
   return createClient<Database>(supabaseUrl, supabaseAnonKey, {
     auth: {
