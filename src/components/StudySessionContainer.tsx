@@ -64,7 +64,10 @@ export default function StudySessionContainer() {
   // Handle finished phase - show completion screen
   if (sessionPhase === "finished") {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-4">
+      <div
+        className="flex flex-col items-center justify-start gap-8 px-4 pt-16"
+        style={{ height: "calc(100vh - 4rem)" }}
+      >
         <div className="bg-green-100 p-6 rounded-full">
           <div className="w-16 h-16 text-green-600 flex items-center justify-center">
             <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,7 +111,7 @@ export default function StudySessionContainer() {
   // Handle active phase - show study card
   if (sessionPhase === "active" && currentCard) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 max-w-2xl mx-auto">
+      <div className="flex flex-col items-center px-4 py-8 max-w-2xl mx-auto" style={{ height: "calc(100vh - 4rem)" }}>
         {/* Header with progress */}
         <StudySessionHeader currentIndex={currentCardIndex} totalCards={totalCards} />
 

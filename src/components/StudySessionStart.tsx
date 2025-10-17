@@ -18,7 +18,7 @@ export interface StudySessionStartProps {
  */
 export default function StudySessionStart({ flashcardCount, onStartSession }: StudySessionStartProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-4">
+    <div className="flex flex-col items-center justify-start gap-8 px-4 pt-16" style={{ height: "calc(100vh - 4rem)" }}>
       {/* Icon */}
       <div className="bg-blue-100 p-6 rounded-full">
         <BookOpen className="w-16 h-16 text-blue-600" />
