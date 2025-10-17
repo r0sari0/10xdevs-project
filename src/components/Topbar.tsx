@@ -73,6 +73,12 @@ export default function Topbar() {
             Generator
           </a>
           <a
+            href="/study"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Nauka
+          </a>
+          <a
             href="/flashcards"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >

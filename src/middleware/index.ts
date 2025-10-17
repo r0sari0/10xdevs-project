@@ -1,7 +1,7 @@
 import { defineMiddleware } from "astro:middleware";
 import { createServerClient } from "../db/supabase.client";
 
-const protectedRoutes = ["/", "/flashcards", "/generate"];
+const protectedRoutes = ["/", "/flashcards", "/generate", "/study"];
 
 export const onRequest = defineMiddleware(async (context, next) => {
   // Create Supabase client with cookie support
