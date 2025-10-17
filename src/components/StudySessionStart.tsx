@@ -34,8 +34,7 @@ export default function StudySessionStart({ flashcardCount, onStartSession }: St
 
       {/* Description */}
       <p className="text-center text-gray-500 max-w-md">
-        Przejrzyj swoje fiszki w skupiony sposób. Pokaż odpowiedź, oceń swoją wiedzę i przejdź do
-        następnej fiszki.
+        Przejrzyj swoje fiszki w skupiony sposób. Pokaż odpowiedź, oceń swoją wiedzę i przejdź do następnej fiszki.
       </p>
 
       {/* Start Button */}

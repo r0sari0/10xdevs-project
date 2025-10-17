@@ -23,17 +23,12 @@ export default function StudySessionHeader({ currentIndex, totalCards }: StudySe
         <h2 className="text-lg font-semibold text-gray-900">
           Fiszka {currentIndex + 1} z {totalCards}
         </h2>
-        <span className="text-sm text-gray-500">
-          {Math.round(progress)}%
-        </span>
+        <span className="text-sm text-gray-500">{Math.round(progress)}%</span>
       </div>
 
       {/* Progress bar */}
       <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-        <div
-          className="bg-blue-500 h-full transition-all duration-300 ease-out"
-          style={{ width: `${progress}%` }}
-        />
+        <div className="bg-blue-500 h-full transition-all duration-300 ease-out" style={{ width: `${progress}%` }} />
       </div>
     </div>
   );

@@ -29,6 +29,13 @@ export default function StudyCard({ flashcard, isAnswerRevealed, onToggleAnswer 
     setTimeout(() => setIsFlipping(false), 300);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleCardClick();
+    }
+  };
+
   return (
     <div className="perspective w-full h-96">
       {/* Card container with flip effect */}
@@ -41,6 +48,10 @@ export default function StudyCard({ flashcard, isAnswerRevealed, onToggleAnswer 
           transform: isAnswerRevealed ? "rotateY(180deg)" : "rotateY(0deg)",
         }}
         onClick={handleCardClick}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={0}
+        aria-pressed={isAnswerRevealed}
       >
         {/* Front of card */}
         <div
@@ -51,9 +62,7 @@ export default function StudyCard({ flashcard, isAnswerRevealed, onToggleAnswer 
           }}
         >
           <p className="text-gray-500 text-sm mb-4">Pytanie</p>
-          <p className="text-2xl font-semibold text-center text-gray-900 leading-relaxed">
-            {flashcard.front}
-          </p>
+          <p className="text-2xl font-semibold text-center text-gray-900 leading-relaxed">{flashcard.front}</p>
           <p className="text-gray-400 text-sm mt-8 italic">Kliknij, aby zobaczyć odpowiedź</p>
         </div>
 
@@ -66,9 +75,7 @@ export default function StudyCard({ flashcard, isAnswerRevealed, onToggleAnswer 
           }}
         >
           <p className="text-gray-500 text-sm mb-4">Odpowiedź</p>
-          <p className="text-2xl font-semibold text-center text-blue-900 leading-relaxed">
-            {flashcard.back}
-          </p>
+          <p className="text-2xl font-semibold text-center text-blue-900 leading-relaxed">{flashcard.back}</p>
           <p className="text-gray-400 text-sm mt-8 italic">Kliknij, aby ukryć odpowiedź</p>
         </div>
       </div>

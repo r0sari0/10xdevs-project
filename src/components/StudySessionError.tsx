@@ -27,9 +27,7 @@ export default function StudySessionError({ error, onRetry }: StudySessionErrorP
       {/* Heading */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold text-gray-900">Błąd podczas ładowania</h1>
-        <p className="text-lg text-gray-600">
-          Nie udało się załadować Twoich fiszek.
-        </p>
+        <p className="text-lg text-gray-600">Nie udało się załadować Twoich fiszek.</p>
       </div>
 
       {/* Error message */}
