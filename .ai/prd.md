@@ -159,7 +159,6 @@ Głównym problemem, który rozwiązuje aplikacja, jest czasochłonność i prac
     -   Sesja nauki prezentuje jedną fiszkę naraz, pokazując najpierw jej awers.
     -   Użytkownik może odsłonić rewers.
     -   Użytkownik ocenia, jak dobrze zna odpowiedź (np. "Łatwe", "Trudne", "Do powtórki").
-    -   Ocena jest przekazywana do algorytmu, który ustala datę następnej powtórki.
     -   Sesja kończy się, gdy nie ma więcej fiszek zaplanowanych do powtórki na dany dzień.
 
 ## 6. Metryki sukcesu
