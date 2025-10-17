@@ -9,7 +9,7 @@ import { BookOpen } from "lucide-react";
  */
 export default function StudySessionEmpty() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-4">
+    <div className="flex flex-col items-center justify-start gap-8 px-4 pt-8">
       {/* Icon */}
       <div className="bg-gray-100 p-6 rounded-full">
         <BookOpen className="w-16 h-16 text-gray-400" />

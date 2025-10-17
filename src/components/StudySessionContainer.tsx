@@ -23,11 +23,9 @@ import { Loader2 } from "lucide-react";
  */
 export default function StudySessionContainer() {
   const {
-    flashcards,
     currentCard,
     currentCardIndex,
     totalCards,
-    currentCardNumber,
     sessionPhase,
     isAnswerRevealed,
     isLoading,
@@ -66,15 +64,10 @@ export default function StudySessionContainer() {
   // Handle finished phase - show completion screen
   if (sessionPhase === "finished") {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-4">
+      <div className="flex flex-col items-center justify-start gap-8 px-4 pt-8">
         <div className="bg-green-100 p-6 rounded-full">
           <div className="w-16 h-16 text-green-600 flex items-center justify-center">
-            <svg
-              className="w-full h-full"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -115,7 +108,7 @@ export default function StudySessionContainer() {
   // Handle active phase - show study card
   if (sessionPhase === "active" && currentCard) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 max-w-2xl mx-auto">
+      <div className="flex flex-col items-center px-4 py-8 max-w-2xl mx-auto">
         {/* Header with progress */}
         <StudySessionHeader currentIndex={currentCardIndex} totalCards={totalCards} />
 
@@ -123,11 +116,7 @@ export default function StudySessionContainer() {
         <div className="mt-12" />
 
         {/* Study Card */}
-        <StudyCard
-          flashcard={currentCard}
-          isAnswerRevealed={isAnswerRevealed}
-          onToggleAnswer={toggleAnswerRevealed}
-        />
+        <StudyCard flashcard={currentCard} isAnswerRevealed={isAnswerRevealed} onToggleAnswer={toggleAnswerRevealed} />
 
         {/* Spacer */}
         <div className="mt-12" />
