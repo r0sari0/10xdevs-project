@@ -1,0 +1,15 @@
+---
+import Layout from "../layouts/Layout.astro";
+import StudySessionContainer from "../components/StudySessionContainer";
+
+// Ensure user is authenticated
+if (!Astro.locals.user) {
+  return Astro.redirect("/login");
+}
+---
+
+<Layout>
+  <div class="container mx-auto px-4 py-8">
+    <StudySessionContainer client:load />
+  </div>
+</Layout>

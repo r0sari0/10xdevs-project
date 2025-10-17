@@ -192,3 +192,45 @@ export interface FlashcardFormErrors {
 }
 
 // #endregion
+
+// #region Study Session ViewModels
+
+/**
+ * Represents a rating option for a flashcard in study session
+ */
+export interface RatingOption {
+  label: string;
+  value: "easy" | "hard" | "again";
+  color: string; // Tailwind class (e.g., "bg-green-500")
+}
+
+/**
+ * Represents the phase/state of a study session
+ */
+export type StudySessionPhase = "notStarted" | "loading" | "active" | "finished" | "error";
+
+/**
+ * Internal state of the StudySessionContainer component
+ */
+export interface StudySessionState {
+  // Data
+  flashcards: FlashcardDto[];
+  currentCardIndex: number;
+
+  // UI states
+  sessionPhase: StudySessionPhase;
+  isAnswerRevealed: boolean;
+  isLoading: boolean;
+  error: string | null;
+}
+
+/**
+ * Computed values derived from StudySessionState
+ */
+export interface StudySessionComputedState extends StudySessionState {
+  currentCard: FlashcardDto | null;
+  totalCards: number;
+  currentCardNumber: number;
+}
+
+// #endregion
