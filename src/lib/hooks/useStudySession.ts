@@ -1,12 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import type {
-  FlashcardDto,
-  StudySessionState,
-  StudySessionPhase,
-  StudySessionComputedState,
-  RatingOption,
-  PaginatedResponseDto,
-} from "../../types";
+import type { FlashcardDto, StudySessionState, StudySessionComputedState, PaginatedResponseDto } from "../../types";
 
 /**
  * Fisher-Yates shuffle algorithm to randomly reorder an array
@@ -100,9 +93,7 @@ export function useStudySession() {
         error: null,
       }));
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Nieznany błąd podczas pobierania fiszek";
-      console.error("useStudySession loadFlashcards error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Nieznany błąd podczas pobierania fiszek";
       setState((prev) => ({
         ...prev,
         error: errorMessage,
@@ -163,7 +154,7 @@ export function useStudySession() {
    * Rate the current card (easy/hard/again) and move to next
    * Currently just moves to next card (rating storage not implemented in MVP)
    */
-  const rateCard = useCallback((rating: RatingOption) => {
+  const rateCard = useCallback(() => {
     // In MVP, we don't persist ratings, just move to next card
     // Future: send rating to API endpoint
     nextCard();

@@ -18,7 +18,7 @@ export interface StudySessionStartProps {
  */
 export default function StudySessionStart({ flashcardCount, onStartSession }: StudySessionStartProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-4">
+    <div className="flex flex-col items-center justify-start gap-8 px-4 pt-8">
       {/* Icon */}
       <div className="bg-blue-100 p-6 rounded-full">
         <BookOpen className="w-16 h-16 text-blue-600" />
@@ -34,8 +34,7 @@ export default function StudySessionStart({ flashcardCount, onStartSession }: St
 
       {/* Description */}
       <p className="text-center text-gray-500 max-w-md">
-        Przejrzyj swoje fiszki w skupiony sposób. Pokaż odpowiedź, oceń swoją wiedzę i przejdź do
-        następnej fiszki.
+        Przejrzyj swoje fiszki w skupiony sposób. Pokaż odpowiedź, oceń swoją wiedzę i przejdź do następnej fiszki.
       </p>
 
       {/* Start Button */}
